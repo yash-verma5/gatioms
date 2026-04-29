@@ -1,0 +1,59 @@
+# File: src/main/resources/application.yml
+# Configuration for GatiOMS Foundation
+# ============================================================
+# GatiOMS - application.yaml
+# Sprint 1: Temporary config for Hibernate DDL capture
+# ============================================================
+
+# LEARNING CHECKPOINT — application.yaml
+#
+# 1. Spring Boot concept used:
+#    Externalized configuration via YAML — hierarchical and readable
+#    Preferred over .properties for nested configs like spring.jpa.properties.*
+#
+# 2. OFBiz/Moqui equivalent:
+#    ddl-auto: create  → like running OFBiz with the -install flag
+#    format_sql: true  → like setting delegator log level to verbose
+#
+# 3. Thing that could go wrong:
+#    ddl-auto: create DROPS and recreates all tables on every restart
+#    = all your data is wiped each time
+#    How to spot: tables are always empty after restart
+#    Fix: switch to validate after Step 1.6 (Flyway takes over)
+# ============================================================
+
+spring:
+  application:
+    name: GatiOMS
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:3306/gati_oms?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${DB_USER:root}
+    password: ${DB_PASS:123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  flyway:
+    enabled: false
+
+shopify:
+  api:
+    key: ${SHOPIFY_API_KEY:placeholder}
+    password: ${SHOPIFY_PASSWORD:placeholder}
+    shop-url: ${SHOPIFY_SHOP_URL:placeholder}
+  poll:
+    order-interval-ms: 300000
+    product-cron: "0 0 0 * * *"
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+    dev.yashverma.gatioms: DEBUG
+
+
