@@ -1,4 +1,4 @@
-srpackage dev.yashverma.gatioms.repository;
+package dev.yashverma.gatioms.repository;
 
 import dev.yashverma.gatioms.domain.entity.OrderFulfillmentGroup;
 import dev.yashverma.gatioms.domain.entity.OrderFulfillmentGroupId;

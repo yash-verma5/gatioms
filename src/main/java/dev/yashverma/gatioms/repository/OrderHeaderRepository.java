@@ -9,21 +9,29 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Repository
 public interface OrderHeaderRepository extends JpaRepository<OrderHeader, String> {
 
     @Transactional(readOnly = true)
-    List<OrderHeader> findByStatusId(String statusId);
+    @Query(value = "SELECT o FROM OrderHeader o JOIN FETCH o.customerParty JOIN FETCH o.productStore WHERE o.statusId = :statusId",
+           countQuery = "SELECT count(o) FROM OrderHeader o WHERE o.statusId = :statusId")
+    Page<OrderHeader> findByStatusId(@Param("statusId") String statusId, Pageable pageable);
 
     @Transactional(readOnly = true)
-    @Query("SELECT o FROM OrderHeader o WHERE o.customerParty.partyId = :partyId")
-    List<OrderHeader> findByCustomerPartyId(@Param("partyId") String partyId);
+    @Query(value = "SELECT o FROM OrderHeader o JOIN FETCH o.customerParty JOIN FETCH o.productStore WHERE o.customerParty.partyId = :partyId",
+           countQuery = "SELECT count(o) FROM OrderHeader o WHERE o.customerParty.partyId = :partyId")
+    Page<OrderHeader> findByCustomerPartyId(@Param("partyId") String partyId, Pageable pageable);
 
     @Transactional(readOnly = true)
-    @Query("SELECT o FROM OrderHeader o WHERE o.productStore.productStoreId = :storeId AND o.statusId = :statusId")
-    List<OrderHeader> findByProductStoreIdAndStatusId(@Param("storeId") String storeId, @Param("statusId") String statusId);
+    @Query(value = "SELECT o FROM OrderHeader o JOIN FETCH o.customerParty JOIN FETCH o.productStore WHERE o.productStore.productStoreId = :storeId AND o.statusId = :statusId",
+           countQuery = "SELECT count(o) FROM OrderHeader o WHERE o.productStore.productStoreId = :storeId AND o.statusId = :statusId")
+    Page<OrderHeader> findByProductStoreIdAndStatusId(@Param("storeId") String storeId, @Param("statusId") String statusId, Pageable pageable);
 
     @Transactional(readOnly = true)
-    List<OrderHeader> findByOrderDateBetween(LocalDateTime from, LocalDateTime to);
+    @Query(value = "SELECT o FROM OrderHeader o JOIN FETCH o.customerParty JOIN FETCH o.productStore WHERE o.orderDate BETWEEN :from AND :to",
+           countQuery = "SELECT count(o) FROM OrderHeader o WHERE o.orderDate BETWEEN :from AND :to")
+    Page<OrderHeader> findByOrderDateBetween(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to, Pageable pageable);
 }

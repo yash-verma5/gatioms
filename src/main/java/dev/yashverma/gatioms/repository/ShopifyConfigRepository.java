@@ -16,4 +16,8 @@ public interface ShopifyConfigRepository extends JpaRepository<ShopifyConfig, St
 
     @Transactional(readOnly = true)
     Optional<ShopifyConfig> findByShopId(String shopId);
+
+    @Transactional(readOnly = true)
+    @org.springframework.data.jpa.repository.Query("SELECT s FROM ShopifyConfig s JOIN FETCH s.productStore WHERE s.shopId = :shopId")
+    Optional<ShopifyConfig> findByShopIdWithStore(@org.springframework.data.repository.query.Param("shopId") String shopId);
 }

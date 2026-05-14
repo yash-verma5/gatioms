@@ -10,13 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 @Repository
 public interface ShopifyShopOrderRepository extends JpaRepository<ShopifyShopOrder, ShopifyShopOrderId> {
 
     @Transactional(readOnly = true)
-    @Query("SELECT s FROM ShopifyShopOrder s WHERE s.shopifyConfig.shopId = :shopId")
-    List<ShopifyShopOrder> findByShopId(@Param("shopId") String shopId);
+    @Query(value = "SELECT s FROM ShopifyShopOrder s WHERE s.shopifyConfig.shopId = :shopId",
+           countQuery = "SELECT count(s) FROM ShopifyShopOrder s WHERE s.shopifyConfig.shopId = :shopId")
+    Page<ShopifyShopOrder> findByShopId(@Param("shopId") String shopId, Pageable pageable);
 
     @Transactional(readOnly = true)
     @Query("SELECT COUNT(s) > 0 FROM ShopifyShopOrder s WHERE s.id.shopifyOrderId = :shopifyOrderId AND s.id.shopId = :shopId")

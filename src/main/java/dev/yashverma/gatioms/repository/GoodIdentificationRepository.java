@@ -15,10 +15,10 @@ import java.util.Optional;
 public interface GoodIdentificationRepository extends JpaRepository<GoodIdentification, GoodIdentificationId> {
 
     @Transactional(readOnly = true)
-    @Query("SELECT g FROM GoodIdentification g WHERE g.product.productId = :productId AND g.goodIdentificationType.goodIdentificationTypeId = :typeId")
+    @Query("SELECT g FROM GoodIdentification g JOIN FETCH g.product JOIN FETCH g.goodIdentificationType WHERE g.product.productId = :productId AND g.goodIdentificationType.goodIdentificationTypeId = :typeId")
     List<GoodIdentification> findByProductIdAndGoodIdentificationTypeId(@Param("productId") String productId, @Param("typeId") String typeId);
 
     @Transactional(readOnly = true)
-    @Query("SELECT g FROM GoodIdentification g WHERE g.idValue = :idValue AND g.goodIdentificationType.goodIdentificationTypeId = :typeId")
+    @Query("SELECT g FROM GoodIdentification g JOIN FETCH g.product JOIN FETCH g.goodIdentificationType WHERE g.idValue = :idValue AND g.goodIdentificationType.goodIdentificationTypeId = :typeId")
     Optional<GoodIdentification> findByIdValueAndGoodIdentificationTypeId(@Param("idValue") String idValue, @Param("typeId") String typeId);
 }
