@@ -21,7 +21,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Person extends BaseEntity {
+public class Person extends BaseEntity implements org.springframework.data.domain.Persistable<String> {
 
     @Id
     @Column(name = "party_id", length = 20)
@@ -43,6 +43,16 @@ public class Person extends BaseEntity {
     @MapsId
     @JoinColumn(name = "party_id")
     private Party party;
+
+    @Override
+    public String getId() {
+        return partyId;
+    }
+
+    @Override
+    public boolean isNew() {
+        return getCreatedStamp() == null;
+    }
 
     @Override
     public boolean equals(Object o) {

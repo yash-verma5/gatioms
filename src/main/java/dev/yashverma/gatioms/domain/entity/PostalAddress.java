@@ -20,7 +20,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostalAddress extends BaseEntity {
+public class PostalAddress extends BaseEntity implements org.springframework.data.domain.Persistable<String> {
 
     @Id
     @Column(name = "contact_mech_id", length = 20)
@@ -51,6 +51,16 @@ public class PostalAddress extends BaseEntity {
     @MapsId
     @JoinColumn(name = "contact_mech_id")
     private ContactMech contactMech;
+
+    @Override
+    public String getId() {
+        return contactMechId;
+    }
+
+    @Override
+    public boolean isNew() {
+        return getCreatedStamp() == null;
+    }
 
     @Override
     public boolean equals(Object o) {
